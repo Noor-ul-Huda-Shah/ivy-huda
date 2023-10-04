@@ -1,9 +1,13 @@
 # global
+
+import numpy as np
 import ivy
+
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_supported_device_and_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
+
 )
 
 
@@ -29,26 +33,26 @@ def poisson(x, name=None):
     {
         "2.5.1 and above": {
             "cpu": (
-                "bfloat16",
-                "float32",
-                "float64",
+                    "bfloat16",
+                    "float32",
+                    "float64",
             ),
             "gpu": (
-                "bfloat16",
-                "float16",
-                "float32",
-                "float64",
+                    "bfloat16",
+                    "float16",
+                    "float32",
+                    "float64",
             ),
         },
         "2.4.2 and below": {
             "cpu": (
-                "float32",
-                "float64",
+                    "float32",
+                    "float64",
             ),
             "gpu": (
-                "float16",
-                "float32",
-                "float64",
+                    "float16",
+                    "float32",
+                    "float64",
             ),
         },
     },
@@ -104,3 +108,24 @@ def standard_normal(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
+
+
+def generate_multinomial_samples(n, probabilities):
+    """
+    Generate samples from a multinomial distribution.
+
+    Args:
+    n (int): Total number of trials.
+    probabilities (list): List of probabilities for each outcome.
+
+    Returns:
+    list: A list representing the counts of each outcome.
+    """
+    # Generate samples from the multinomial distribution
+    counts = np.random.choice(len(probabilities), size=n, p=probabilities)
+
+    # Count the occurrences of each outcome
+    outcome_counts = [np.sum(counts == i) for i in range(len(probabilities))]
+
+    return outcome_counts
+
